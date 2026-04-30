@@ -12,7 +12,7 @@ const usermiddleware = async(req,res,next)=>
                 throw new Error('Token is not presnet')
        
         const payload = jwt.verify(token,process.env.JWT_KEY)
-        console.log('3')
+      
 
         const _id = payload._id
         if(!_id)
