@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 const CardPage = () => {
  const {data} = useSelector((state)=>state.workout)
  const {index} = useParams();
+ const day_id = index;
  const day = data?.data?.days[index]
   if (!day) return <p>No Data Found</p>;
 
@@ -42,6 +43,8 @@ const CardPage = () => {
               key={index}
               goal={goal}
               exercises={filteredExercises}
+              day_name={day_name}
+              day_id ={day_id}
             />
           );
         })}

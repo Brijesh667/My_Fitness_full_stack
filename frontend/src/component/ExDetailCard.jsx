@@ -1,6 +1,11 @@
 import React from "react";
+import ExerciseCard from "./ExerciseCard";
+import { useNavigate } from "react-router"
 
-const ExDetailCard = ({ goal, exercises }) => {
+const ExDetailCard = ({ goal, exercises,day_name,day_id }) => {
+
+ 
+
   return (
     <div className="w-full">
       
@@ -9,47 +14,17 @@ const ExDetailCard = ({ goal, exercises }) => {
         🔥 {goal}
       </h2>
 
-      {/* Exercise Cards */}
+      {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {exercises.map((ex, index) => (
-          <div
+          <ExerciseCard
             key={index}
-            className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition duration-300"
-          >
-            
-            {/* Exercise Name */}
-            <h3 className="text-lg font-semibold mb-2 text-gray-800">
-              {ex.exercise_name}
-            </h3>
-
-            {/* Level */}
-            <p className="text-sm text-gray-500 mb-2 capitalize">
-              Level: {ex.level}
-            </p>
-
-            {/* Description */}
-            <p className="text-sm text-gray-600 mb-3">
-              {ex.exercise_description}
-            </p>
-
-            {/* Sets */}
-            <div className="space-y-2">
-              {ex.sets?.map((set, i) => (
-                <div
-                  key={i}
-                  className="bg-gray-50 p-2 rounded-md text-sm"
-                >
-                  <p className="font-medium">
-                    {set.set_name} - {set.reps} reps
-                  </p>
-                  <p className="text-gray-500">
-                    {set.set_description}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-          </div>
+            exercise={ex}
+            index={index}
+            day_name={day_name}
+            goal={goal}
+            day_id ={day_id}
+          />
         ))}
       </div>
     </div>

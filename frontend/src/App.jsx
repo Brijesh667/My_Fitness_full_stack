@@ -10,12 +10,16 @@ import Nav from './Navigation/Nav'
 import Body from "./component/Body";
 import Footer from "./component/footer";
 import CardPage from './Pages/CardPage'
+import StartExercise from "./component/startExercise";
+import WorkoutPlan from "./Pages/WorkoutPlan";
+import ExerciseLibrary from "./Pages/ExerciseLibrary";
 
 function App(){
   
   const dispatch = useDispatch();
   const {isAuthenticated,user,loading} = useSelector((state)=>state.auth);
   const {data} = useSelector((state)=>state.workout)
+ 
 
   // check initial authentication
   useEffect(() => {
@@ -39,10 +43,15 @@ function App(){
     <Routes>
       <Route path="/" element={isAuthenticated ?<><HomePage></HomePage><Body/><Footer/></>:<Navigate to="/signup" />}></Route>
       <Route path="/login" element={isAuthenticated?<Navigate to="/" />:<Login></Login>}></Route>
-      <Route path="/card/:index" element={isAuthenticated?<CardPage/>:<Navigate to="/" />}></Route>
+      <Route path="/day/:index" element={isAuthenticated?<CardPage/>:<Navigate to="/" />}></Route>
+      <Route path="/day/:day_name/:day_id/:goal/:exercise_name/:index" element={isAuthenticated?<StartExercise/>:<Navigate to="/" />}></Route>
       <Route path="/signup" element={isAuthenticated?<Navigate to="/" />:<Signup></Signup>}></Route>
+      <Route path="/Exercise_Library" element={isAuthenticated?<ExerciseLibrary/>:<Signup/>}></Route>
+      <Route path="/workout_plan" element={isAuthenticated?<WorkoutPlan/>:<Signup/>}></Route>
       
-      {/* <Route 
+      {
+      
+      /* <Route 
         path="/admin" 
         element={
           isAuthenticated && user?.role === 'admin' ? 

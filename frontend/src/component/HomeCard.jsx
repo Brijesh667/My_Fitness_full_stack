@@ -9,7 +9,7 @@ export default function HomeCard({day_name, title,index})
 
     function handleClick()
     {
-        Navigate(`/card/${index}`);
+        Navigate(`/day/${index}`);
     }
 
 

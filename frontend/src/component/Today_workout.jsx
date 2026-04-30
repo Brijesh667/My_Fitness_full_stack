@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router"
 
-export default function Today_workout({day_name, workout})
+export default function Today_workout({day_name, workout,index})
 {
     const Navigate = useNavigate();
     return(
@@ -21,7 +21,7 @@ export default function Today_workout({day_name, workout})
                 <button
                 className="mt-4 px-8 py-3 bg-blue-600 text-white rounded-lg
                 hover:bg-blue-700 transition duration-300 shadow-md" 
-                onClick={()=> Navigate(`/card/${day_name}`)}>
+                onClick={()=> Navigate(`/day/${index}`)}>
                     Start Workout
                 </button>
 

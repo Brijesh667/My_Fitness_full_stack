@@ -6,19 +6,21 @@ import Today_workout from "./Today_workout";
 export default function Body()
 {  const {data} = useSelector((state)=>state.workout)
    
-    console.log('data',data) 
+    
   
 
   
     const today = new Date();
     const d = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const dayName = d[today.getDay()];
+    const index1 = today.getDay();
+    const dayName = d[index1];
    
-    const ex_name = data?.dayName?.discription;
-
+    const day_goal = data?.data?.days[index1].day_goal
+    
+    const workout = day_goal.join(' & ')
   return(
     <>
-        <Today_workout day_name={dayName} workout={ex_name} />
+        <Today_workout day_name={dayName} workout={workout} index={index1} />
         <div id="body" className="w-full flex justify-center mt-10">
 
             {/* main container */}
@@ -48,7 +50,7 @@ export default function Body()
                         <HomeCard 
                             day_name={item?.day_name} 
                             title={item?.description} 
-                            key={item}
+                            key={index}
                             index = {index}
                         />
                     ))}

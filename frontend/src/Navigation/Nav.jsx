@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router"
 const profile = new URL('../assets/profile.png', import.meta.url).href
 const Logo = new URL('../assets/Logo.png', import.meta.url).href
+import UseProfile from "../component/userProfile";
+import { useSelector } from "react-redux";
+
 
 export default function Nav(){
     const Navigate = useNavigate();
+    const {isAuthenticated,user,loading} = useSelector((state)=>state.auth);
    
     return (
   <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[100%] 
@@ -54,12 +58,12 @@ export default function Nav(){
 
         {/* Profile */}
         <div>
-        <img
+        {isAuthenticated? <UseProfile />:<><img
             src={profile}
             alt="profile"
             className="w-12 h-12 rounded-full object-cover 
             border-2 border-white hover:scale-105 transition"
-        />
+        /></>}
         </div>
     </div>
 
