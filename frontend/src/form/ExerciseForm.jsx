@@ -1,214 +1,282 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Plus, Trash2, X, Dumbbell } from "lucide-react";
 
-const exerciseValidationSchema = z.object({
-    exerciseName: z
-        .string()
-        .min(1, 'Exercise name is required')
-        .max(50, 'Exercise name must be less than 50 characters'),
-    level: z.enum(['beginner', 'intermediate', 'advanced', 'everyone']),
-    exerciseDescription: z
-        .string()
-        .max(300, 'Exercise description must be less than 300 characters')
-        .optional()
+// ─── Zod Schema ───────────────────────────────────────────────────────────────
+const setSchema = z.object({
+  set_name: z
+    .string()
+    .min(1, "Set name required")
+    .max(30, "Max 30 characters"),
+  reps: z
+    .number({ invalid_type_error: "Reps must be a number" })
+    .min(1, "Min 1 rep")
+    .max(100, "Max 100 reps"),
+  set_description: z.string().max(100, "Max 100 characters").optional(),
 });
 
-const ExerciseForm = ({ dayGoal, onClose }) => {
-    const [sets, setSets] = useState([]);
-    const [showSetInput, setShowSetInput] = useState(false);
-    const [reps, setReps] = useState('');
-    const [setDescription, setSetDescription] = useState('');
+const exerciseSchema = z.object({
+  exercise_name: z
+    .string()
+    .min(1, "Exercise name required")
+    .max(50, "Max 50 characters"),
+  exercise_goal: z.string().min(1, "Goal is required"),
+  level: z.enum(["beginner", "intermediate", "advanced", "everyone"]),
+  sets: z
+    .array(setSchema)
+    .min(1, "At least one set required")
+    .max(5, "Max 5 sets allowed"),
+  exercise_description: z
+    .string()
+    .max(300, "Max 300 characters")
+    .optional(),
+});
 
-    const { control, handleSubmit, formState: { errors }, reset } = useForm({
-        resolver: zodResolver(exerciseValidationSchema),
-        defaultValues: {
-            exerciseName: '',
-            level: 'everyone',
-            exerciseDescription: ''
-        }
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function ExerciseForm({ goalName, onSave, onClose }) {
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(exerciseSchema),
+    defaultValues: {
+      exercise_name: "",
+      exercise_goal: goalName,
+      level: "everyone",
+      sets: [],
+      exercise_description: "",
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "sets",
+  });
+
+  const addSet = () => {
+    if (fields.length >= 5) return;
+    append({
+      set_name: `Set ${fields.length + 1}`,
+      reps: "",
+      set_description: "",
     });
+  };
 
-    const addSet = () => {
-        if (reps) {
-            const nextSetNumber = sets.length + 1;
-            setSets([...sets, { set_name: `Set ${nextSetNumber}`, reps: parseInt(reps, 10), set_description: setDescription.trim() }]);
-            setReps('');
-            setSetDescription('');
-            setShowSetInput(false);
-        }
-    };
+  const onSubmit = (data) => {
+    onSave(data);
+  };
 
-    const removeSet = (index) => {
-        setSets(sets.filter((_, i) => i !== index));
-    };
-
-    const onSubmit = (data) => {
-        const formData = {
-            ...data,
-            sets
-        };
-        console.log({
-            dayGoal,
-            ...formData
-        });
-        alert(`Exercise "${formData.exerciseName}" saved for goal: ${dayGoal}`);
-        reset();
-        setSets([]);
-        onClose?.();
-    };
-
-    return (
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full p-6 bg-linear-to-br from-slate-50 to-white shadow-md rounded-2xl border border-slate-200">
-            <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                    <h3 className="text-xl font-semibold text-slate-900 mb-1">Add Exercise</h3>
-                    <p className="text-sm text-slate-500">For: <span className="font-semibold text-slate-800">{dayGoal}</span></p>
-                </div>
-                {onClose && (
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="text-slate-500 hover:text-slate-900 font-semibold text-lg"
-                    >
-                        ✕
-                    </button>
-                )}
+  return (
+    // ── Backdrop ──
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      {/* ── Modal Card ── */}
+      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#0f0f0f] border border-[#2a2a2a] shadow-2xl">
+        
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-[#0f0f0f] border-b border-[#1e1e1e]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-orange-500/10 text-orange-400">
+              <Dumbbell size={18} />
             </div>
-
-            <div className="mb-5">
-                <label className="block text-slate-700 text-sm font-semibold mb-2">Exercise Name *</label>
-                <Controller
-                    name="exerciseName"
-                    control={control}
-                    render={({ field }) => (
-                        <input
-                            {...field}
-                            type="text"
-                            className={`w-full p-3 border rounded-2xl focus:outline-none focus:ring-2 ${errors.exerciseName ? 'border-red-500 focus:ring-red-500' : 'border-slate-300 focus:ring-sky-500'
-                                }`}
-                            placeholder="Enter exercise name"
-                        />
-                    )}
-                />
-                {errors.exerciseName && <p className="text-red-600 text-xs mt-1">{errors.exerciseName.message}</p>}
+            <div>
+              <h2 className="text-white font-semibold text-lg leading-none">Add Exercise</h2>
+              <p className="text-xs text-zinc-500 mt-0.5">Goal: <span className="text-orange-400">{goalName}</span></p>
             </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-5 space-y-5">
 
+          {/* Exercise Name */}
+          <div>
+            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2">
+              Exercise Name
+            </label>
+            <input
+              {...register("exercise_name")}
+              placeholder="e.g. Bench Press"
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] text-white placeholder-zinc-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500/60 focus:ring-1 focus:ring-orange-500/20 transition-all"
+            />
+            {errors.exercise_name && (
+              <p className="mt-1.5 text-xs text-red-400">{errors.exercise_name.message}</p>
+            )}
+          </div>
 
-            <div className="mb-5">
-                <label className="block text-slate-700 text-sm font-semibold mb-2">Level</label>
-                <Controller
-                    name="level"
-                    control={control}
-                    render={({ field }) => (
-                        <select
-                            {...field}
-                            className="w-full p-3 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500"
-                        >
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
-                            <option value="everyone">Everyone</option>
-                        </select>
-                    )}
-                />
-            </div>
+          {/* Goal (read-only) */}
+          <div>
+            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2">
+              Exercise Goal
+            </label>
+            <input
+              {...register("exercise_goal")}
+              readOnly
+              className="w-full bg-[#111] border border-[#222] text-orange-400 rounded-xl px-4 py-3 text-sm cursor-not-allowed"
+            />
+          </div>
 
-            <div className="mb-5">
-                <label className="block text-slate-700 text-sm font-semibold mb-3">Sets</label>
-                <div className="space-y-2">
-                    {sets.map((set, index) => (
-                        <div key={index} className="px-4 py-3 rounded-2xl bg-slate-100 border border-slate-300 flex items-start justify-between">
-                            <div className="text-slate-700">
-                                <div className="font-semibold">{set.set_name}</div>
-                                <div className="text-sm text-slate-600">{set.reps} reps</div>
-                                {set.set_description && <div className="text-sm text-slate-600">{set.set_description}</div>}
-                            </div>
-                            {sets.length > 0 && (
-                                <button
-                                    type="button"
-                                    onClick={() => removeSet(index)}
-                                    className="text-red-600 hover:text-red-800 font-semibold ml-2"
-                                >
-                                    Remove
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                <button
-                    type="button"
-                    onClick={() => setShowSetInput(true)}
-                    className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-2xl font-semibold text-sm"
-                >
-                    Add Set
-                </button>
-
-                {showSetInput && (
-                    <div className="mt-4 space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                        <div>
-                            <p className="text-slate-700 text-sm font-semibold mb-2">Set {sets.length + 1}</p>
-                            <p className="text-slate-500 text-xs">Set name will be automatically assigned</p>
-                        </div>
-                        <input
-                            type="number"
-                            placeholder="Enter reps"
-                            value={reps}
-                            onChange={(e) => setReps(e.target.value)}
-                            min="1"
-                            max="100"
-                            className="w-full p-3 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Set description (optional)"
-                            value={setDescription}
-                            onChange={(e) => setSetDescription(e.target.value)}
-                            className="w-full p-3 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sky-500"
-                        />
-                        <button
-                            type="button"
-                            onClick={addSet}
-                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-2xl font-semibold"
-                        >
-                            Save Set
-                        </button>
-                    </div>
-                )}
-
-
-            </div>
-
-            <div className="mb-6">
-                <label className="block text-slate-700 text-sm font-semibold mb-2">Exercise Description</label>
-                <Controller
-                    name="exerciseDescription"
-                    control={control}
-                    render={({ field }) => (
-                        <textarea
-                            {...field}
-                            className={`w-full p-3 border rounded-2xl focus:outline-none focus:ring-2 ${errors.exerciseDescription ? 'border-red-500 focus:ring-red-500' : 'border-slate-300 focus:ring-sky-500'
-                                }`}
-                            maxLength="300"
-                            rows="3"
-                            placeholder="Describe this exercise (optional)"
-                        />
-                    )}
-                />
-                {errors.exerciseDescription && <p className="text-red-600 text-xs mt-1">{errors.exerciseDescription.message}</p>}
-            </div>
-
-            <button
-                type="submit"
-                className="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-2xl"
+          {/* Level */}
+          <div>
+            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2">
+              Level
+            </label>
+            <select
+              {...register("level")}
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500/60 transition-all appearance-none cursor-pointer"
             >
-                Save Exercise
-            </button>
-        </form>
-    );
-};
+              <option value="everyone">Everyone</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
 
-export default ExerciseForm;
+          {/* Sets */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">
+                Sets{" "}
+                <span className="normal-case text-zinc-600 font-normal">
+                  ({fields.length}/5)
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={addSet}
+                disabled={fields.length >= 5}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-400 text-xs font-medium hover:bg-orange-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                <Plus size={13} /> Add Set
+              </button>
+            </div>
+
+            {errors.sets?.root && (
+              <p className="mb-2 text-xs text-red-400">{errors.sets.root.message}</p>
+            )}
+            {errors.sets && !errors.sets.root && typeof errors.sets.message === "string" && (
+              <p className="mb-2 text-xs text-red-400">{errors.sets.message}</p>
+            )}
+
+            <div className="space-y-3">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="relative rounded-xl border border-[#252525] bg-[#141414] p-4"
+                >
+                  {/* Set header */}
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
+                      Set {index + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="p-1 rounded-md text-zinc-600 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Set Name */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs text-zinc-500 mb-1.5">Set Name</label>
+                      <input
+                        {...register(`sets.${index}.set_name`)}
+                        placeholder="e.g. Warm-up Set"
+                        className="w-full bg-[#1a1a1a] border border-[#2a2a2a] text-white placeholder-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500/50 transition-all"
+                      />
+                      {errors.sets?.[index]?.set_name && (
+                        <p className="mt-1 text-xs text-red-400">
+                          {errors.sets[index].set_name.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Reps */}
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs text-zinc-500 mb-1.5">Reps</label>
+                      <input
+                        {...register(`sets.${index}.reps`, { valueAsNumber: true })}
+                        type="number"
+                        placeholder="12"
+                        min={1}
+                        max={100}
+                        className="w-full bg-[#1a1a1a] border border-[#2a2a2a] text-white placeholder-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500/50 transition-all"
+                      />
+                      {errors.sets?.[index]?.reps && (
+                        <p className="mt-1 text-xs text-red-400">
+                          {errors.sets[index].reps.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Set Description */}
+                    <div className="col-span-2">
+                      <label className="block text-xs text-zinc-500 mb-1.5">
+                        Set Description <span className="text-zinc-700">(optional)</span>
+                      </label>
+                      <input
+                        {...register(`sets.${index}.set_description`)}
+                        placeholder="e.g. Go slow on eccentric phase"
+                        className="w-full bg-[#1a1a1a] border border-[#2a2a2a] text-white placeholder-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500/50 transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {fields.length === 0 && (
+                <div className="text-center py-6 text-zinc-600 text-sm border border-dashed border-[#222] rounded-xl">
+                  Click "Add Set" to get started
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Exercise Description */}
+          <div>
+            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2">
+              Exercise Description <span className="normal-case font-normal text-zinc-600">(optional)</span>
+            </label>
+            <textarea
+              {...register("exercise_description")}
+              rows={3}
+              placeholder="Brief notes about form, tempo, or focus..."
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] text-white placeholder-zinc-600 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-orange-500/60 focus:ring-1 focus:ring-orange-500/20 transition-all"
+            />
+            {errors.exercise_description && (
+              <p className="mt-1.5 text-xs text-red-400">{errors.exercise_description.message}</p>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-3 rounded-xl border border-[#2a2a2a] text-zinc-400 text-sm font-medium hover:bg-white/5 transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 py-3 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-400 active:scale-95 transition-all"
+            >
+              Save Exercise
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

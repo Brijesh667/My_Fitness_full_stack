@@ -17,8 +17,8 @@ const register = async(req,res)=>{
         const token = jwt.sign({_id:user._id, emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn:60*60*1000})
         const reply = {
             firstName:user.firstName,
-            age:use.age,
             emailId:user.emailId,
+            age:user.age,
             role:user.role,
             _id:user._id
         }
@@ -57,8 +57,8 @@ const login = async(req,res)=>{
         res.cookie('token',token,{maxAge:60*60*1000})
         const reply = {
             firstName:user.firstName,
-            age:user.age,
             emailId:user.emailId,
+            age:user.age,
             role:user.role,
             _id:user._id
         }
@@ -103,6 +103,7 @@ const adminRegister = async(req,res)=>{
         const reply = {
             firstName:firstName, 
             emailId:emailId, 
+            age:user.age,
             role:user.role, 
             _id:user._id
         }
@@ -125,6 +126,7 @@ const AuthCheck = async(req,res)=>{
         const reply = {
             firstName:req.user.firstName,
             emailId:req.user.emailId,
+            age:user.age,
             role:req.user.role,
             _id:req.user._id
         }

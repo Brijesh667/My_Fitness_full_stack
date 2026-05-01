@@ -1,23 +1,29 @@
 import HomeCard from "./HomeCard";
 import { useSelector } from "react-redux";
 import Today_workout from "./Today_workout";
+import NoWorkoutPlan from "./noplan";
+import {useNavigate} from 'react-router'
 
 
 export default function Body()
 {  const {data} = useSelector((state)=>state.workout)
-   
+    const navigate = useNavigate()
+    if(!data)
+        return(
+            <>
+                <NoWorkoutPlan/>
+            </>
+        )
     
-  
-
-  
     const today = new Date();
     const d = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     const index1 = today.getDay();
     const dayName = d[index1];
-   
-    const day_goal = data?.data?.days[index1].day_goal
-    
-    const workout = day_goal.join(' & ')
+    let workout = 'Not Set'
+    const day_goal = data?.data?.days[index1]?.day_goal
+    if(day_goal)
+        workout = day_goal.join(" & ")
+
   return(
     <>
         <Today_workout day_name={dayName} workout={workout} index={index1} />
@@ -33,12 +39,14 @@ export default function Body()
                         My Weekly Workout Plan  
                     </h1>
 
-                <button className="px-6 py-2 text-white font-semibold rounded-lg 
-                        bg-gradient-to-r from-blue-500 to-indigo-600 
-                        hover:from-blue-600 hover:to-indigo-700 
-                        shadow-md hover:shadow-xl transition-all duration-300">
-                        Change Plan
-                    </button>
+                <button
+                    onClick={()=>{navigate('/day/create')}}
+                    className="px-6 py-2 text-white font-semibold rounded-lg 
+                    bg-gradient-to-r from-blue-500 to-indigo-600 
+                   hover:from-blue-600 hover:to-indigo-700 
+                    shadow-md hover:shadow-xl transition-all duration-300">
+                    Change Plan
+                </button>
 
                 </div>
 

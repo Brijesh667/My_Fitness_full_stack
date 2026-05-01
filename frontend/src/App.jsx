@@ -13,6 +13,7 @@ import CardPage from './Pages/CardPage'
 import StartExercise from "./component/startExercise";
 import WorkoutPlan from "./Pages/WorkoutPlan";
 import ExerciseLibrary from "./Pages/ExerciseLibrary";
+import DayForm from "./form/DayForm";
 
 function App(){
   
@@ -48,6 +49,7 @@ function App(){
       <Route path="/signup" element={isAuthenticated?<Navigate to="/" />:<Signup></Signup>}></Route>
       <Route path="/Exercise_Library" element={isAuthenticated?<ExerciseLibrary/>:<Signup/>}></Route>
       <Route path="/workout_plan" element={isAuthenticated?<WorkoutPlan/>:<Signup/>}></Route>
+      <Route path="/day/create" element={isAuthenticated?<DayForm/>:<Signup/>}></Route>
       
       {
       
