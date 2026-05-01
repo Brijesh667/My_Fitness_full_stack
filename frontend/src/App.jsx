@@ -25,11 +25,13 @@ function App(){
   // check initial authentication
   useEffect(() => {
     dispatch(checkAuth());
-    dispatch(getWeekWorkout());
-
   }, [dispatch]);
 
-
+  useEffect(() => {
+  if (isAuthenticated && user?._id) {
+    dispatch(getWeekWorkout());
+  }
+}, [isAuthenticated, user, dispatch]);
 
   
   if (loading) {

@@ -26,7 +26,13 @@ const workoutSlice = createSlice({
         error: null,
     },
 
-    reducers: {},
+    reducers: {
+        resetWorkout: (state) => {
+            state.data = null;
+            state.loading = false;
+            state.error = null;
+        }
+    },
 
     extraReducers: (builder) => {
         builder
@@ -48,5 +54,7 @@ const workoutSlice = createSlice({
             });
     },
 });
+
+export const { resetWorkout } = workoutSlice.actions;
 
 export default workoutSlice.reducer;

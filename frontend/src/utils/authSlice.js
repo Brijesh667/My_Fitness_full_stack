@@ -9,7 +9,9 @@ export const registerUser = createAsyncThunk(
             return response.data.user;
         }
         catch(error){
-            return rejectWithValue(error);
+            return rejectWithValue(
+            error.response?.data || { message: 'Something went wrong' }
+            );
         }
     }
 );
@@ -47,34 +49,40 @@ export const loginUser = createAsyncThunk(
         }
 
         catch(error){
-            return rejectWithValue(error)
+            return rejectWithValue(
+            error.response?.data || { message: 'Something went wrong' }
+            );
         }
     }
 )
 
 export const checkAuth = createAsyncThunk(
     'auth/check',
-    async({rejectWithValue})=>{
+    async(_,{rejectWithValue})=>{
         try{
             const response = await axiosClient.get('/user/authcheck');
             return response.data.user;
 
         }
         catch(error){
-            return rejectWithValue(error)
+            return rejectWithValue(
+            error.response?.data || { message: 'Something went wrong' }
+            );
         }
     }
 )
 export const logoutUser = createAsyncThunk(
     'auth/logout',
-    async({rejectWithValue})=>{
+    async(_,{rejectWithValue})=>{
         try{
             const response = await axiosClient.post('/user/logout');
             return response.data.user;
 
         }
         catch(error){
-            return rejectWithValue(error)
+            return rejectWithValue(
+            error.response?.data || { message: 'Something went wrong' }
+            );
         }
     }
 )

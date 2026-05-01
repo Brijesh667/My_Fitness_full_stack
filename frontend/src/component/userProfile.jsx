@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from "../utils/authSlice";
+import { resetWorkout } from "../utils/workoutSlice";
 const profileImg = new URL('../assets/profile.png', import.meta.url).href;
 
 const UseProfile = () => {
@@ -25,9 +26,10 @@ const UseProfile = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  function handlbutton(){
-    dispatch(logoutUser())
-  }
+ const handlbutton = async () => {
+  await dispatch(logoutUser());
+  dispatch(resetWorkout());
+};
   return (
     <div className="relative" ref={dropdownRef}>
       
