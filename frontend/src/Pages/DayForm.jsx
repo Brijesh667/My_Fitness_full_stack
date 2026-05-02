@@ -3,8 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus, Dumbbell, Trash2, Target, ChevronDown, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import ExerciseForm from "./ExerciseForm";
-import axiosClient from "../utils/axiosClient"; // apna axiosClient path yahan adjust karo
+import ExerciseForm from "../component/ExerciseForm";
+import axiosClient from "../utils/axiosClient"; 
+import { getWeekWorkout } from "../utils/workoutSlice";
+import { useDispatch} from 'react-redux';
+
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
 const daySchema = z.object({
@@ -32,6 +35,7 @@ export default function DayForm({ onSubmit: onFinalSubmit }) {
   // ── Local state for goals ──
   const [goalInput, setGoalInput] = useState("");
   const [goalInputError, setGoalInputError] = useState("");
+  const dispatch = useDispatch();
 
   // goals: [{ name: string, exercises: ExerciseData[] }]
   const [goals, setGoals] = useState([]);
@@ -109,6 +113,8 @@ export default function DayForm({ onSubmit: onFinalSubmit }) {
       setIsSuccess(false);
 
       const response = await axiosClient.post('/save/create', dayObject);
+      dispatch(getWeekWorkout());
+
 
       setIsSuccess(true);
       if (onFinalSubmit) onFinalSubmit(response.data);

@@ -14,7 +14,7 @@ const register = async(req,res)=>{
         req.body.password = await bcrypt.hash(password,10);
         req.body.role = 'user'
         const user = await User.create(req.body);
-        const token = jwt.sign({_id:user._id, emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn:60*60*1000})
+        const token = jwt.sign({_id:user._id, emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn: "1h"})
         const reply = {
             firstName:user.firstName,
             emailId:user.emailId,
@@ -23,7 +23,12 @@ const register = async(req,res)=>{
             _id:user._id
         }
 
-        res.cookie('token',token,{maxAge:60*60*1000});
+        res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,   // localhost
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000
+    });
         res.status(200).json({
             user:reply,
             message:"User Register successfully"
@@ -53,8 +58,13 @@ const login = async(req,res)=>{
         if(!match_password)
             throw new Error('Invalid credential')
 
-        const token = jwt.sign({_id:user._id, emailId:user.emailId, role:user.role},process.env.JWT_KEY,{expiresIn:1000*60*60})
-        res.cookie('token',token,{maxAge:60*60*1000})
+        const token = jwt.sign({_id:user._id, emailId:user.emailId, role:user.role},process.env.JWT_KEY,{expiresIn: "1h"})
+            res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,   // localhost
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000
+        });
         const reply = {
             firstName:user.firstName,
             emailId:user.emailId,
@@ -82,7 +92,7 @@ const logout = async(req,res)=>{
         const payload = jwt.decode(token);
         await redisClient.set(`token:${token}`,'Blocked')
         await redisClient.expireAt(`token:${token}`,payload.exp);
-        res.cookie('token',null,{expiresIn:new Date(Date.now())});
+        res.clearCookie('token');
         res.status(200).send('Logged out successfully...')
     }
     catch(err)
@@ -98,8 +108,13 @@ const adminRegister = async(req,res)=>{
         const {firstName,emailId,password} = req.body;
         req.body.password = await bcrypt.hash(password,10);
         const user = await User.create(req.body)
-        const token = jwt.sign({_id:user._id, emailId:emailId, role:user.role},process.env.JWT_KEY,{expiresIn:100*60*60})
-        res.cookie('token',token,{maxAge:100*60*60});
+        const token = jwt.sign({_id:user._id, emailId:emailId, role:user.role},process.env.JWT_KEY,{expiresIn: "1h"})
+          res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,   // localhost
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000
+        });
         const reply = {
             firstName:firstName, 
             emailId:emailId, 

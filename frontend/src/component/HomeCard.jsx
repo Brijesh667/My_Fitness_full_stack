@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
-
+import { FaTrash } from "react-icons/fa";
+import { Pencil } from "lucide-react";
 
 export default function HomeCard({day_name, title,index})
 {
@@ -12,33 +13,61 @@ export default function HomeCard({day_name, title,index})
         Navigate(`/day/${index}`);
     }
 
-
-  
-
     return(
-        <div className="bg-white w-[280px] rounded-xl shadow-md p-5 flex flex-col items-center gap-3 hover:shadow-lg transition">
+        <div className="
+            w-full 
+            sm:w-[300px] 
+            bg-white 
+            rounded-2xl 
+            shadow-md 
+            p-5 
+            flex flex-col 
+            justify-between 
+            gap-4 
+            hover:shadow-xl 
+            transition-all 
+            duration-300
+        ">
 
-    <div>
-        <h1 className="text-xl font-bold text-gray-800">
-            {day_name}
-        </h1>
-    </div>
+            {/* Top section (edit button) */}
+            <div className="flex justify-end">
+                <button className="p-2 rounded-lg hover:bg-gray-100 transition">
+                    <Pencil size={18} className="text-gray-600"/>
+                </button>
+            </div>
 
-    <div>
-        <h2 className="text-gray-600 text-center">
-            {title}
-        </h2>
-    </div>
+            {/* Content */}
+            <div className="flex flex-col items-center text-center gap-2">
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-800">
+                    {day_name}
+                </h1>
 
-    <div>
-        <button 
-            onClick={handleClick}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-        >
-            {iscomplete}
-        </button>
-    </div>
+                <h2 className="text-sm sm:text-base text-gray-500 leading-relaxed">
+                    {title}
+                </h2>
+            </div>
 
-</div>
+            {/* Action button */}
+            <div className="w-full">
+                <button 
+                    onClick={handleClick}
+                    className="
+                        w-full 
+                        py-2.5 
+                        bg-blue-500 
+                        text-white 
+                        rounded-lg 
+                        font-medium
+                        hover:bg-blue-600 
+                        active:scale-95 
+                        transition-all 
+                        duration-200
+                    "
+                >
+                    {iscomplete}
+                </button>
+            </div>
+
+        </div>
     )
 }

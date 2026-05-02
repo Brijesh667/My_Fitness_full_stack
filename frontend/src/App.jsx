@@ -13,7 +13,7 @@ import CardPage from './Pages/CardPage'
 import StartExercise from "./component/startExercise";
 import WorkoutPlan from "./Pages/WorkoutPlan";
 import ExerciseLibrary from "./Pages/ExerciseLibrary";
-import DayForm from "./form/DayForm";
+import DayForm from "./Pages/DayForm";
 
 function App(){
   
@@ -42,16 +42,17 @@ function App(){
 
   return(
   <>
-    <Nav></Nav>
-    <Routes>
+    {isAuthenticated && <Nav />}
+    <div className="pt-20">
+      <Routes>
       <Route path="/" element={isAuthenticated ?<><HomePage></HomePage><Body/><Footer/></>:<Navigate to="/signup" />}></Route>
-      <Route path="/login" element={isAuthenticated?<Navigate to="/" />:<Login></Login>}></Route>
+      <Route path="/login" element={isAuthenticated?<Navigate to="/" />:<Login/>}></Route>
       <Route path="/day/:index" element={isAuthenticated?<CardPage/>:<Navigate to="/" />}></Route>
       <Route path="/day/:day_name/:day_id/:goal/:exercise_name/:index" element={isAuthenticated?<StartExercise/>:<Navigate to="/" />}></Route>
       <Route path="/signup" element={isAuthenticated?<Navigate to="/" />:<Signup></Signup>}></Route>
-      <Route path="/Exercise_Library" element={isAuthenticated?<ExerciseLibrary/>:<Signup/>}></Route>
-      <Route path="/workout_plan" element={isAuthenticated?<WorkoutPlan/>:<Signup/>}></Route>
-      <Route path="/day/create" element={isAuthenticated?<DayForm/>:<Signup/>}></Route>
+      <Route path="/Exercise_Library" element={isAuthenticated?<ExerciseLibrary/>:<Navigate to="/signup" />}></Route>
+      <Route path="/workout_plan" element={isAuthenticated?<WorkoutPlan/>:<Navigate to="/signup" />}></Route>
+      <Route path="/day/create" element={isAuthenticated?<DayForm/>:<Navigate to="/signup" />}></Route>
       
       {
       
@@ -64,6 +65,7 @@ function App(){
         } 
       /> */}
     </Routes>
+    </div>
   </>
   )
 }
