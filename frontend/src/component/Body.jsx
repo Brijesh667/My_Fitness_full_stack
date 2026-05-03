@@ -93,7 +93,7 @@ export default function Body()
                         <HomeCard 
                             day_name={item?.day_name} 
                             title={item?.description} 
-                            key={index}
+                            key={item?._id}
                             index = {index}
                         />
                     ))}

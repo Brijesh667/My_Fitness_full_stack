@@ -3,20 +3,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, NavLink } from 'react-router';
-import { loginUser } from '../utils/authSlice'
+import { loginUser} from '../utils/authSlice'
 import { useEffect, useState } from 'react';
 
 const loginSchema = z.object({
   emailId: z.string().email("Invalid Email"),
-  password: z.string().min(8, "Password is too weak")
+  password: z.string()
 });
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+  const { isAuthenticated, loading, loginerror } = useSelector((state) => state.auth);
   const {
     register,
     handleSubmit,
@@ -33,6 +34,8 @@ export default function Login() {
    
     dispatch(loginUser(data));
   };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gray-100">
@@ -110,8 +113,14 @@ export default function Login() {
 
           {/* Button */}
           <div>
+            {loginerror && (
+              <p className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg py-2 px-3">
+                {loginerror}
+              </p>
+            )}
             <button
               type="submit"
+              
               disabled={loading}
               className={`w-full py-2.5 rounded-lg font-semibold text-white transition ${
                 loading

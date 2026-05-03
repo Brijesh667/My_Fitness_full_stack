@@ -1,6 +1,7 @@
 // models/exercise.model.js
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+// ✅ Removed unused `Day` import — avoids circular dependency
 
 const exercise_schema = new Schema({
     exercise_name: {
@@ -11,9 +12,9 @@ const exercise_schema = new Schema({
     },
     exercise_goal: {
         type: String,
-        trim:true,
+        trim: true,
         required: true,
-        maxLength:50
+        maxLength: 50
     },
     level: {
         type: String,
@@ -26,7 +27,7 @@ const exercise_schema = new Schema({
                 type: String,
                 trim: true,
                 maxLength: 30,
-                required: true          // e.g. "Warm-up Set", "Working Set"
+                required: true
             },
             reps: {
                 type: Number,
@@ -47,6 +48,16 @@ const exercise_schema = new Schema({
         maxLength: 300
     }
 }, { timestamps: true });
+
+
+exercise_schema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await mongoose.model('Day').updateMany(
+            { workout: { $in: [doc._id] } },  // ✅ correct way to search inside an array
+            { $pull: { workout: doc._id } }
+        );
+    }
+});
 
 const Exercise = mongoose.model('Exercise', exercise_schema);
 module.exports = Exercise;

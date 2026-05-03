@@ -7,6 +7,7 @@ import ExerciseForm from "../component/ExerciseForm";
 import axiosClient from "../utils/axiosClient"; 
 import { getWeekWorkout } from "../utils/workoutSlice";
 import { useDispatch} from 'react-redux';
+import { useNavigate } from "react-router";
 
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
@@ -23,6 +24,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function DayForm({ onSubmit: onFinalSubmit }) {
   // react-hook-form (only for day_name + description)
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -118,6 +120,7 @@ export default function DayForm({ onSubmit: onFinalSubmit }) {
 
       setIsSuccess(true);
       if (onFinalSubmit) onFinalSubmit(response.data);
+      navigate("/")
     } catch (err) {
       // Axios error response se message lo, warna fallback
       const msg =

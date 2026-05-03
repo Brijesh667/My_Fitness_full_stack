@@ -2,6 +2,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus, Trash2, X, Dumbbell } from "lucide-react";
+import { useParams } from "react-router";
 
 // ─── Zod Schema ───────────────────────────────────────────────────────────────
 const setSchema = z.object({

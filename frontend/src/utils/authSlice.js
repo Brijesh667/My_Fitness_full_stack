@@ -94,17 +94,21 @@ const authSlice = createSlice({
         user:null,
         isAuthenticated:false,
         loading:false,
+        autherror:null,
+        signerror:null,
+        loginerror:null,
         error:null
     },
 
-    reducers:{},
+    reducers:{
+    },
 
   extraReducers: (builder) => {
         builder
         //Register User
         .addCase(registerUser.pending,(state)=>{
             state.loading = true;
-            state.error = null;
+            state.signerror = null;
         })
 
         .addCase(registerUser.fulfilled,(state,action)=>{
@@ -115,7 +119,7 @@ const authSlice = createSlice({
 
         .addCase(registerUser.rejected,(state,action)=>{
             state.loading = false;
-            state.error = action.payload?.message || 'Something went wrong'
+            state.signerror = action.payload?.message || 'Something went wrong'
             state.user = null;
             state.isAuthenticated = false;
         })
@@ -123,7 +127,7 @@ const authSlice = createSlice({
         //Login User Cases
         .addCase(loginUser.pending,(state)=>{
             state.loading = true;
-            state.error = null;
+            state.loginerror = null;
         })
 
         .addCase(loginUser.fulfilled,(state,action)=>{
@@ -134,7 +138,7 @@ const authSlice = createSlice({
 
         .addCase(loginUser.rejected,(state,action)=>{
             state.loading = false;
-            state.error = action.payload?.message || 'Something went wrong'
+            state.loginerror = action.payload?.message || 'Something went wrong'
             state.user = null;
             state.isAuthenticated = false;
         })
@@ -142,7 +146,7 @@ const authSlice = createSlice({
         //Check Auth Cases
       .addCase(checkAuth.pending,(state)=>{
             state.loading = true;
-            state.error = null;
+            state.autherror = null;
         })
 
         .addCase(checkAuth.fulfilled,(state,action)=>{
@@ -153,7 +157,7 @@ const authSlice = createSlice({
 
         .addCase(checkAuth.rejected,(state,action)=>{
             state.loading = false;
-            state.error = action.payload?.message || 'Something went wrong'
+            state.autherror = action.payload?.message || 'Something went wrong'
             state.user = null;
             state.isAuthenticated = false;
         })

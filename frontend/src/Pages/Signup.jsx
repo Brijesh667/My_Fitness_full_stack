@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import {z} from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import { useDispatch, useSelector } from "react-redux";
-import {registerUser} from '../utils/authSlice'
+import {registerUser } from '../utils/authSlice'
 import { useEffect, useState } from "react";
 import { useNavigate,NavLink } from 'react-router';
 
@@ -24,8 +24,7 @@ export default function Signup()
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {isAuthenticated,loading,error} = useSelector((state)=>state.auth)
-
+    const {isAuthenticated,loading,signerror} = useSelector((state)=>state.auth)
     useEffect(()=>{
         if(isAuthenticated)
         {
@@ -43,6 +42,8 @@ export default function Signup()
         handleSubmit,
         formState:{errors},
     } = useForm({resolver:zodResolver(signupSchema)});
+
+
 
    return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gray-100">
@@ -178,6 +179,12 @@ export default function Signup()
 
           {/* Button */}
           <div>
+         
+            {signerror && (
+              <p className="text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg py-2 px-3">
+                {signerror}
+              </p>
+            )}
             <button
               type="submit"
               disabled={loading}
@@ -189,6 +196,7 @@ export default function Signup()
             >
               {loading ? 'Signing Up...' : 'Sign Up'}
             </button>
+
           </div>
 
         </form>

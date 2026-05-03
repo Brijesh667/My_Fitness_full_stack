@@ -5,7 +5,6 @@ import { Pencil } from "lucide-react";
 
 export default function HomeCard({day_name, title,index})
 {
-    const [iscomplete,set_iscomplete] = useState('Start')
     const Navigate = useNavigate();
 
     function handleClick()
@@ -30,11 +29,7 @@ export default function HomeCard({day_name, title,index})
         ">
 
             {/* Top section (edit button) */}
-            <div className="flex justify-end">
-                <button className="p-2 rounded-lg hover:bg-gray-100 transition">
-                    <Pencil size={18} className="text-gray-600"/>
-                </button>
-            </div>
+        
 
             {/* Content */}
             <div className="flex flex-col items-center text-center gap-2">
@@ -64,7 +59,7 @@ export default function HomeCard({day_name, title,index})
                         duration-200
                     "
                 >
-                    {iscomplete}
+                    View
                 </button>
             </div>
 

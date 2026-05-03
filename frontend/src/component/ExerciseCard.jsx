@@ -1,19 +1,50 @@
 import React from "react";
 import { Pencil } from "lucide-react";
 import { useNavigate } from "react-router";
+import axiosClient from "../utils/axiosClient"; 
+import { getWeekWorkout } from "../utils/workoutSlice";
+import { useDispatch } from "react-redux";
+import { MdDelete } from "react-icons/md";
 
-const ExerciseCard = ({ exercise, index, day_name, goal, day_id }) => {
-  const Navigate = useNavigate();
+const ExerciseCard = ({ exercise, index, day_name, goal, day_id, _id }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
   const exercise_name = exercise.exercise_name;
+  const handleDelete = async () => {
+
+  try {
+    console.log(_id)
+    await axiosClient.delete(`/exercise/delete/${_id}`);
+    dispatch(getWeekWorkout())
+    
+  } catch (err) {
+    console.error(err);
+  }
+};  
+
 
   return (
     <div className="group bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
       
-        <div>
-            <button className="p-2 hover:bg-gray-200 rounded">
-                <Pencil size={18} />
-            </button>
-        </div>
+        <div className="flex justify-between items-center w-full mt-2">
+  
+  {/* Delete Button */}
+  <button 
+    onClick={handleDelete} 
+    className="p-2 rounded bg-red-100 text-red-600 hover:bg-red-200 transition"
+  >
+    <MdDelete className="text-lg" />
+  </button>
+
+  {/* Edit Button */}
+  <button 
+    onClick={() => {navigate('/')}} 
+    className="p-2 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
+  >
+    <Pencil />
+  </button>
+
+</div>
       <div>
         {/* Exercise Name */}
         <h3 className="text-xl font-semibold text-gray-800 mb-1 group-hover:text-blue-600 transition">
@@ -58,7 +89,7 @@ const ExerciseCard = ({ exercise, index, day_name, goal, day_id }) => {
       {/* Button */}
       <button
         onClick={() => {
-          Navigate(`/day/${day_name}/${day_id}/${goal}/${exercise_name}/${index}`);
+          navigate(`/day/${day_name}/${day_id}/${goal}/${exercise_name}/${index}`);
         }}
         className="mt-4 w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm py-2.5 px-4 rounded-xl font-medium transition-all duration-200 active:scale-95"
       >

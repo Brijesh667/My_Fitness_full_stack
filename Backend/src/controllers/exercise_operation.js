@@ -101,7 +101,9 @@ const find_exercise = async (req, res) => {
 // DELETE
 const delete_exercise = async (req, res) => {
     try {
+
         const doc = await Exercise.findByIdAndDelete(req.params.id);
+        console.log('backend',doc)
 
         if (!doc) {
             throw new Error("Exercise not found");

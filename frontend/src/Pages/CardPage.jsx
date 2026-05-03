@@ -9,8 +9,10 @@ const CardPage = () => {
  const day_id = index;
  const day = data?.data?.days[index]
   if (!day) return <p>No Data Found</p>;
+  console.log(day);
 
-  const { day_name, day_goal, workout } = day;
+  const { day_name, day_goal, workout, _id } = day;
+  
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-6">
@@ -45,6 +47,7 @@ const CardPage = () => {
               exercises={filteredExercises}
               day_name={day_name}
               day_id ={day_id}
+              _id={_id}
             />
           );
         })}

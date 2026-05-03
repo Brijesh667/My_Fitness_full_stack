@@ -25,7 +25,7 @@ export default function Today_workout({day_name, workout,index})
                 className="mt-4 px-8 py-3 bg-blue-600 text-white rounded-lg
                 hover:bg-blue-700 transition duration-300 shadow-md" 
                 onClick={()=>{exists?Navigate(`/day/${index}`):Navigate('/day/create')}}>
-                    Start Workout
+                    View
                 </button>
 
             </div>

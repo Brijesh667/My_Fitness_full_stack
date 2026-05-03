@@ -14,6 +14,7 @@ import StartExercise from "./component/startExercise";
 import WorkoutPlan from "./Pages/WorkoutPlan";
 import ExerciseLibrary from "./Pages/ExerciseLibrary";
 import DayForm from "./Pages/DayForm";
+import ExForm from "./component/ExForm";
 
 function App(){
   
@@ -53,6 +54,7 @@ function App(){
       <Route path="/Exercise_Library" element={isAuthenticated?<ExerciseLibrary/>:<Navigate to="/signup" />}></Route>
       <Route path="/workout_plan" element={isAuthenticated?<WorkoutPlan/>:<Navigate to="/signup" />}></Route>
       <Route path="/day/create" element={isAuthenticated?<DayForm/>:<Navigate to="/signup" />}></Route>
+      <Route path="/add/:day_name/:goal/:_id" element={isAuthenticated?<ExForm/>:<Navigate to="/signup" />}></Route>
       
       {
       

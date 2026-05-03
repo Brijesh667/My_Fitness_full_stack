@@ -5,6 +5,7 @@ const createDayWorkoutController = async (req, res) => {
     const userId = req.user._id;
 
     const result = await createDayAndAttachToWeek(userId, req.body);
+    console.log(result)
 
     res.status(201).json({
       message: "Day added to weekly plan",
