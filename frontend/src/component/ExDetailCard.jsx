@@ -14,9 +14,7 @@ const ExDetailCard = ({ goal, exercises,day_name,day_id,_id }) => {
       <h2 className="text-xl md:text-2xl font-bold mb-4 text-gray-900 border-l-4 border-blue-500 pl-3">
        {goal}
       </h2>
-      <button onClick={()=>{navigate(`/add/${day_name}/${goal}/${_id}`)}}>
-        Add Exercise
-      </button>
+ 
       </div>
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

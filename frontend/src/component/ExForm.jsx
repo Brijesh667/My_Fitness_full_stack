@@ -35,6 +35,8 @@ const exerciseSchema = z.object({
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function ExForm() {
   const { _id, day_name, goal } = useParams();
+ 
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

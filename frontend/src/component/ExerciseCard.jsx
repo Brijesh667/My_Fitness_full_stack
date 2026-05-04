@@ -37,12 +37,7 @@ const ExerciseCard = ({ exercise, index, day_name, goal, day_id, _id }) => {
   </button>
 
   {/* Edit Button */}
-  <button 
-    onClick={() => {navigate('/')}} 
-    className="p-2 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
-  >
-    <Pencil />
-  </button>
+ 
 
 </div>
       <div>

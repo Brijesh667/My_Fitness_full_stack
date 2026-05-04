@@ -7,7 +7,8 @@ const exerciseRoute = require('./routes/exercise_route')
 const cookieParser = require('cookie-parser')
 const dayRoute = require('./routes/day_route')
 const weekRoute = require('./routes/week_route')
-const daysave = require('./routes/create_full_day_controller')
+const daysave = require('./routes/fullDay_Route')
+const adminWeekSave = require('./routes/adminWeekRoute')
 const cors = require('cors')
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/exercise',exerciseRoute);
 app.use('/day',dayRoute)
 app.use('/week',weekRoute)
 app.use('/save',daysave)
+app.use('/admin',adminWeekSave)
 const InitalizeConnection = async function(){
     try{
         await Promise.all([main(),redisClient.connect()]);
