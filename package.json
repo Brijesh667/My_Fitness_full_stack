@@ -1,0 +1,28 @@
+{
+  "name": "myfitness",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile-first workout and diet tracker",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail -n api,web -c green,cyan \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "start": "npm --prefix backend start",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "lint": "npm --prefix backend run lint",
+    "seed": "npm --prefix backend run seed:exercises",
+    "ingest": "npm --prefix backend run rag:ingest",
+    "verify": "node scripts/verify.mjs",
+    "smoke:api": "npm --prefix backend run smoke:api",
+    "smoke:cleanup": "npm --prefix backend run smoke:cleanup",
+    "test:e2e": "npm --prefix frontend run test:e2e",
+    "verify:proxy": "node scripts/verify-proxy.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "wait-on": "^8.0.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

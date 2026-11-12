@@ -1,0 +1,300 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 6% 5%;
+    --foreground: 40 10% 93%;
+    --card: 240 5% 9%;
+    --card-foreground: 40 10% 93%;
+    --muted: 240 4% 15%;
+    --muted-foreground: 240 5% 66%;
+    --border: 240 5% 19%;
+    --input: 240 5% 24%;
+    --primary: 84 81% 65%;
+    --primary-foreground: 240 10% 6%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 40 10% 93%;
+    --accent: 160 84% 45%;
+    --accent-foreground: 240 10% 6%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --ring: 84 81% 65%;
+    --radius: 1rem;
+    color-scheme: dark;
+  }
+
+  html.light {
+    --background: 42 33% 98%;
+    --foreground: 240 10% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 9%;
+    --muted: 40 14% 94%;
+    --muted-foreground: 240 4% 36%;
+    --border: 40 10% 87%;
+    --input: 40 10% 84%;
+    --primary: 160 84% 28%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 16% 94%;
+    --secondary-foreground: 240 10% 12%;
+    --accent: 160 72% 34%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 60% 32%;
+    --warning: 32 90% 38%;
+    --ring: 160 84% 28%;
+    color-scheme: light;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100dvh;
+    font-size: 16px;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold tracking-tight;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+
+  .surface {
+    @apply rounded-2xl border bg-card text-card-foreground shadow-sm;
+  }
+
+  .surface-muted {
+    @apply rounded-xl border bg-muted/40;
+  }
+
+  .pb-nav {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(110deg, #d9f99d 10%, #34d399 90%);
+  }
+
+  .hero-glow {
+    background:
+      radial-gradient(60% 50% at 20% 0%, rgba(190, 242, 100, 0.14), transparent 70%),
+      radial-gradient(50% 45% at 85% 10%, rgba(52, 211, 153, 0.12), transparent 70%);
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-lg bg-muted;
+  }
+
+  .shimmer-surface {
+    background-image: linear-gradient(
+      100deg,
+      transparent 20%,
+      hsl(var(--foreground) / 0.08) 40%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+  }
+
+  .moving-border {
+    position: relative;
+    isolation: isolate;
+    border-radius: calc(var(--radius) + 2px);
+  }
+
+  .moving-border > .moving-border-inner {
+    position: relative;
+    z-index: 1;
+    border-radius: var(--radius);
+    @apply bg-card;
+  }
+
+  .moving-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    z-index: 0;
+    background: conic-gradient(
+      from var(--border-angle, 0deg),
+      transparent 0deg,
+      transparent 290deg,
+      #bef264 330deg,
+      #34d399 360deg
+    );
+    animation: border-spin 5s linear infinite;
+  }
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@keyframes shimmer-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .moving-border::before {
+    animation: none;
+    background: linear-gradient(110deg, #bef264, #34d399);
+  }
+}
+
+@layer components {
+  .tilt-card {
+    --tilt-x: 50%;
+    --tilt-y: 50%;
+    position: relative;
+    border-radius: 1rem;
+    outline: 1px solid transparent;
+    outline-offset: 3px;
+    transform-style: preserve-3d;
+    transition:
+      transform 180ms ease-out,
+      box-shadow 220ms ease,
+      outline-color 220ms ease;
+    will-change: transform;
+  }
+
+  .tilt-card[data-tilting='true'] {
+    transition-duration: 60ms;
+  }
+
+  .tilt-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      280px circle at var(--tilt-x) var(--tilt-y),
+      rgba(255, 255, 255, 0.1),
+      rgba(190, 242, 100, 0.06) 35%,
+      transparent 72%
+    );
+    transition: opacity 220ms ease;
+  }
+
+  .tilt-card:hover,
+  .tilt-card:focus-within {
+    outline-color: hsl(var(--primary) / 0.45);
+    box-shadow: 0 24px 60px -34px rgba(52, 211, 153, 0.55);
+  }
+
+  .tilt-card:hover::after,
+  .tilt-card:focus-within::after {
+    opacity: 1;
+  }
+
+  .cursor-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      520px circle at var(--cursor-x, 50%) var(--cursor-y, 30%),
+      hsl(var(--primary) / 0.1),
+      hsl(var(--accent) / 0.04) 38%,
+      transparent 68%
+    );
+    transition: opacity 320ms ease;
+    will-change: background;
+  }
+
+  .cursor-glow[data-active='true'] {
+    opacity: 1;
+  }
+
+  .light-rays-mask {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 8%,
+      rgba(0, 0, 0, 0.7) 55%,
+      transparent 96%
+    );
+    mask-image: linear-gradient(to bottom, black 8%, rgba(0, 0, 0, 0.7) 55%, transparent 96%);
+  }
+}
+
+@media (hover: none) {
+  .cursor-glow,
+  .tilt-card::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-card,
+  .tilt-card::after,
+  .cursor-glow {
+    transition: none;
+  }
+
+  .cursor-glow,
+  .tilt-card::after {
+    display: none;
+  }
+}

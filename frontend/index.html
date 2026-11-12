@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="description" content="MyFitness — plan workouts by muscle, track every set, and keep your diet on target." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>MyFitness</title>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('myfitness-theme');
+          if (theme === 'light') document.documentElement.classList.add('light');
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
